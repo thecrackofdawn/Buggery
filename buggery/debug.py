@@ -158,26 +158,26 @@ class Debugger(object):
         interests = {
             'BREAKPOINT': idebug.DbgEng.DEBUG_EVENT_BREAKPOINT,
             'EXCEPTION': idebug.DbgEng.DEBUG_EVENT_EXCEPTION,
-            'CREATE_THREAD': idebug.DbgEng.DEBUG_EVENT_CREATE_THREAD,
+            'CREATETHREAD': idebug.DbgEng.DEBUG_EVENT_CREATE_THREAD,
             'THREAD': idebug.DbgEng.DEBUG_EVENT_EXIT_THREAD,
-            'CREATE_PROCESS': idebug.DbgEng.DEBUG_EVENT_CREATE_PROCESS,
+            'CREATEPROCESS': idebug.DbgEng.DEBUG_EVENT_CREATE_PROCESS,
             'PROCESS': idebug.DbgEng.DEBUG_EVENT_EXIT_PROCESS,
-            'LOAD_MODULE': idebug.DbgEng.DEBUG_EVENT_LOAD_MODULE,
-            'UNLOAD_MODULE': idebug.DbgEng.DEBUG_EVENT_UNLOAD_MODULE,
-            'SYSTEM_ERROR': idebug.DbgEng.DEBUG_EVENT_SYSTEM_ERROR,
-            'SESSION_STATUS': idebug.DbgEng.DEBUG_EVENT_SESSION_STATUS,
-            'CHANGE_DEBUGGEE_STATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_DEBUGGEE_STATE,
-            'CHANGE_ENGINE_STATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_ENGINE_STATE,
-            'CHANGE_SYMBOL_STATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_SYMBOL_STATE,
+            'LOADMODULE': idebug.DbgEng.DEBUG_EVENT_LOAD_MODULE,
+            'UNLOADMODULE': idebug.DbgEng.DEBUG_EVENT_UNLOAD_MODULE,
+            'SYSTEMERROR': idebug.DbgEng.DEBUG_EVENT_SYSTEM_ERROR,
+            'SESSIONSTATUS': idebug.DbgEng.DEBUG_EVENT_SESSION_STATUS,
+            'CHANGEDEBUGGEESTATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_DEBUGGEE_STATE,
+            'CHANGEENGINESTATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_ENGINE_STATE,
+            'CHANGESYMBOLSTATE': idebug.DbgEng.DEBUG_EVENT_CHANGE_SYMBOL_STATE,
         }
-
+        eventtypemask = 0    
         if eventtype in interests:
-            eventtype = interests[eventtype]
+            eventtypemask = interests[eventtype]
 
         self._events.set_handler(eventtype, handler)
 
         if add_interest:
-            self.add_interest(eventtype)
+            self.add_interest(eventtypemask)
 
     def add_interest(self, interest):
         self._events.add_interest(interest)
@@ -234,8 +234,8 @@ class Debugger(object):
         self.wait_for_event()
         return self.control.get_last_event()
 
-    def spawn(self, cmdline):
-        self.client.create_process(cmdline)
+    def spawn(self, cmdline, follow_forks=False):
+        self.client.create_process(cmdline, follow_forks)
 
     def attach(self, pid, flags=None):
         self.client.attach_process(pid, flags)
